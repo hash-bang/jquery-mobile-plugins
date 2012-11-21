@@ -6,13 +6,6 @@
 */
 (function($, window, undefined) {
 	$(document).bind('pagebeforechange', function(e, data) {
-		if ($.jqmparams) {
-			console.log('SKIP NEXT');
-			data.params = $.jqmparams;
-			$.jqmparams = 0;
-			return;
-		}
-
 		var url = (typeof data.toPage == 'string') ? data.toPage : window.location;
 		var urlparsed = /^(.*?)#(.+?)\?(.*)$/.exec(url);
 
@@ -33,8 +26,7 @@
 				} else // Valid key=val pair
 					data.params[keyval[1]] = keyval[2];
 			}
-			data.toPage = baseurl + '#' + hash;
-			$.jqmparams = data.params;
+			data.toPage = $('#' + hash);
 		}
 	});
 })(jQuery, window);
