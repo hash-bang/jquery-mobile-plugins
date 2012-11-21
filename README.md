@@ -9,7 +9,7 @@ This script allows you pass parameters between multi-page jQuery mobile applicat
 
 Usage within the page
 
-	<script src="/lib/jquery-mobile-plugins/page-params/jqm.page.params.js"></script>
+	<script src="/lib/jquery-mobile-plugins/page.params.js"></script>
 
 After its been included in your project you can link between pages in the usual way but also add parameters e.g.
 
