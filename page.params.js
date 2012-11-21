@@ -9,10 +9,6 @@
 		var url = (typeof data.toPage == 'string') ? data.toPage : window.location;
 		var urlparsed = /^(.*?)#(.+?)\?(.*)$/.exec(url);
 
-		console.log('TRIP BEFORE CHANGE - ' + url);
-		console.log(e);
-		console.log(data);
-
 		data.params = [];
 		if (urlparsed) {
 			var baseurl = urlparsed[1];
