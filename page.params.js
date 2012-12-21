@@ -7,13 +7,13 @@
 (function($, window, undefined) {
 	$(document)
 		.bind('pagebeforechange', function(e, data) {
+			data.params = [];
 			if (typeof data.toPage != 'string')
 				return;
 			var url = (typeof data.toPage == 'string') ? data.toPage : window.location;
 			var urlparsed = /^(.*?)#(.+?)\?(.*)$/.exec(url);
 			console.log('PBC', url);
 
-			data.params = [];
 			if (urlparsed) {
 				var baseurl = urlparsed[1];
 				var hash = urlparsed[2];
