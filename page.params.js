@@ -12,7 +12,6 @@
 				return;
 			var url = (typeof data.toPage == 'string') ? data.toPage : window.location;
 			var urlparsed = /^(.*?)#(.+?)\?(.*)$/.exec(url);
-			console.log('PBC', url);
 
 			if (urlparsed) {
 				var baseurl = urlparsed[1];
@@ -32,7 +31,6 @@
 				data.paramString = false;
 		})
 		.bind('pagechange', function(e, data) {
-			console.log('PC', data);
 			if (data.paramString)
 				document.location.hash = data.paramString;
 		});
