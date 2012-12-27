@@ -5,11 +5,18 @@ An (eventual) collection of useful jQuery Mobile plugins.
 
 Lightweight jQuery Mobile page parameter processing - jqm.page.params.js
 ========================================================================
-This script allows you pass parameters between multi-page jQuery mobile applications.
+This script allows you pass parameters between multi-page jQuery mobile (jQM) applications.
 
-Usage within the page
+Usage within the page (note that the load order is jQuery, jQM-Plugins then jQM):
 
+	<!-- jQuery -->
+	<script src="/lib/jquery/jquery.min.js"></script>
+	<!-- jQM-Plugins -->
 	<script src="/lib/jquery-mobile-plugins/page.params.js"></script>
+	<!-- jQM -->
+	<script src="/lib/jquery/jquery.mobile.min.js"></script>
+
+**WARNING:** This JavaScript file _must_ be listed after jQuery but _before_ jQuery Mobile because it needs to override a few settings in jQuery Mobile in order to function.
 
 After its been included in your project you can link between pages in the usual way but also add parameters e.g.
 
