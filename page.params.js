@@ -43,7 +43,7 @@ $(function() {
 				document.location.hash = data.paramString;
 		})
 		.bind('pageinit', function(e) {
-			if ($.mobile.routerinit)
+			if ($.mobile.routerinit) // Prevent init event firing twice. No idea why $(document).bind('pageinit') fires twice in the first place
 				return;
 			$.mobile.routerinit = 1;
 			var urlparsed;
