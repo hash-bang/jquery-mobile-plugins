@@ -85,31 +85,25 @@ $(function() {
 		$('#' + hash).trigger('pageprepare', [data]);
 	});
 	$(window).bind('hashchange', function(e) {
-		if (window.location.hash == '#back') {
-			var lastpage = $.mobile.urlHistory.pop();
-			console.warn('Router - Go back UNSAFE', lastpage.url);
-			$.mobile.routerBackTransition = lastpage.transition ? lastpage.transition : $.mobile.defaultPageTransition;
-			window.location.hash = '#' + lastpage.url;
-		} else {
-			if ($.mobile.routerAvoid) {
-				$.mobile.routerAvoid--;
-				return;
-			}
-			var urlparsed;
-			if (urlparsed = /^(.*?)#(.+?)(?:\?(.*))?$/.exec(window.location)) {
-				console.log('Router - Goto ' + urlparsed[2]);
-				var options = {changeHash: false};
-				if ($.mobile.routerBackTransition) {
-					options.transition = $.mobile.routerBackTransition;
-					options.reverse = true;
-					$.mobile.routerBackTransition = false;
-				} else if ($.mobile.routerA) {
-					var aTransition = $.mobile.routerA.data('transition');
-					if (aTransition)
-						options.transition = aTransition;
-				}
-				$.mobile.changePage('#' + urlparsed[2] + (urlparsed[3] ? '?' + urlparsed[3] : ''), options);
-			}
+		if ($.mobile.routerAvoid) {
+			$.mobile.routerAvoid--;
+			return;
 		}
+		var urlparsed;
+		if (urlparsed = /^(.*?)#(.+?)(?:\?(.*))?$/.exec(window.location)) {
+			console.log('Router - Goto ' + urlparsed[2]);
+			var options = {changeHash: false};
+			if ($.mobile.routerBackTransition) {
+				options.transition = $.mobile.routerBackTransition;
+				options.reverse = true;
+				$.mobile.routerBackTransition = false;
+			} else if ($.mobile.routerA) {
+				var aTransition = $.mobile.routerA.data('transition');
+				if (aTransition)
+					options.transition = aTransition;
+			}
+			$.mobile.changePage('#' + urlparsed[2] + (urlparsed[3] ? '?' + urlparsed[3] : ''), options);
+		}
+		
 	});
 });
