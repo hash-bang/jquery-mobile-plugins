@@ -9,7 +9,16 @@ $(document).on('mobileinit', function() {
 	$.extend($.mobile, {
 		linkBindingEnabled: false,
 		hashListeningEnabled: false,
-		routerBackTransition: 0
+		routerBasePage: 'home',
+		routerBaseTransition: 'slide',
+		routerA: false,
+		routerBackTransition: 0,
+		routerGoBack: function() {
+			var lastpage = $.mobile.urlHistory.pop();
+			console.log('Router - Go back', lastpage.url);
+			$.mobile.routerBackTransition = lastpage.transition ? lastpage.transition : $.mobile.defaultPageTransition;
+			window.location.hash = lastpage.url;
+		}
 	});
 	// Replace the urlHistory addNew function with our own which stores the page params
 	$.mobile.urlHistory.addNew = function(url, transition, title, pageUrl, role) {
@@ -21,16 +30,30 @@ $(document).on('mobileinit', function() {
 		$.mobile.urlHistory.activeIndex = $.mobile.urlHistory.stack.length - 1;
 		console.log('HISTORY NOW', $.mobile.urlHistory.stack);
 	};
-	$.mobile.urlHistory.pop = function(amount) { // Not sure why pop() doesnt exist anyway in the urlHistory object
-		if (!amount)
-			amount = 1;
-		$.mobile.urlHistory.activeIndex -= amount;
-		if ($.mobile.urlHistory.activeIndex <= 0)
-			return {url: 'home'};
+	$.mobile.urlHistory.pop = function() { // Not sure why pop() doesnt exist anyway in the urlHistory object
+		if ($.mobile.urlHistory.activeIndex - 1 < 0) {
+			$.mobile.urlHistory.activeIndex = 1;
+			$.mobile.urlHistory.stack = $.mobile.urlHistory.stack.slice(0, $.mobile.urlHistory.activeIndex);
+			console.warn('Router WARNING - Attempted to go back beyond recorded history!');
+			return $.mobile.urlHistory.stack[0];
+		} else
+			$.mobile.urlHistory.activeIndex--;
 		var prev = $.mobile.urlHistory.stack[$.mobile.urlHistory.activeIndex];
 		$.mobile.urlHistory.stack = $.mobile.urlHistory.stack.slice(0, $.mobile.urlHistory.activeIndex);
+		if (!/#/.exec(prev.url)) {
+			console.warn('Router WARNING - Attempting to move to a non hash page', prev);
+			prev.transition = $.mobile.routerBaseTransition;
+			prev.url = '#' + $.mobile.routerBasePage;
+		}
 		return prev;
 	};
+	$(document).on('click', 'a', function(e) {
+		console.log('Registered A click', e);
+		$.mobile.routerA = $(this);
+		if ($(this).data('rel') == 'back') {
+			$.mobile.routerGoBack();
+		}
+	});
 });
 $(function() {
 	$(document).bind('pagebeforechange', function(e, data) {
@@ -64,13 +87,13 @@ $(function() {
 	$(window).bind('hashchange', function(e) {
 		if (window.location.hash == '#back') {
 			var lastpage = $.mobile.urlHistory.pop();
-			console.log('Router - Go back', lastpage.url);
-			$.mobile.routerBackTransition = lastpage.transition;
+			console.warn('Router - Go back UNSAFE', lastpage.url);
+			$.mobile.routerBackTransition = lastpage.transition ? lastpage.transition : $.mobile.defaultPageTransition;
 			window.location.hash = '#' + lastpage.url;
 		} else {
 			if ($.mobile.routerAvoid) {
-				console.log('ROUTER AVOID');
 				$.mobile.routerAvoid--;
+				return;
 			}
 			var urlparsed;
 			if (urlparsed = /^(.*?)#(.+?)(?:\?(.*))?$/.exec(window.location)) {
@@ -78,8 +101,12 @@ $(function() {
 				var options = {changeHash: false};
 				if ($.mobile.routerBackTransition) {
 					options.transition = $.mobile.routerBackTransition;
-					options.reverse = 1;
-					$.mobile.routerBackTransition = 0;
+					options.reverse = true;
+					$.mobile.routerBackTransition = false;
+				} else if ($.mobile.routerA) {
+					var aTransition = $.mobile.routerA.data('transition');
+					if (aTransition)
+						options.transition = aTransition;
 				}
 				$.mobile.changePage('#' + urlparsed[2] + (urlparsed[3] ? '?' + urlparsed[3] : ''), options);
 			}
