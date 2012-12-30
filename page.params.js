@@ -28,27 +28,25 @@ $(document).on('mobileinit', function() {
 		     $.mobile.urlHistory.clearForward();
 		$.mobile.urlHistory.stack.push( {url : url, transition: transition, title: title, pageUrl: pageUrl, role: role } );
 		$.mobile.urlHistory.activeIndex = $.mobile.urlHistory.stack.length - 1;
-		console.log('HISTORY NOW', $.mobile.urlHistory.stack);
 	};
 	$.mobile.urlHistory.pop = function() { // Not sure why pop() doesnt exist anyway in the urlHistory object
 		if ($.mobile.urlHistory.activeIndex - 1 < 0) {
 			$.mobile.urlHistory.activeIndex = 1;
 			$.mobile.urlHistory.stack = $.mobile.urlHistory.stack.slice(0, $.mobile.urlHistory.activeIndex);
-			console.warn('Router WARNING - Attempted to go back beyond recorded history!');
+			//console.warn('Router WARNING - Attempted to go back beyond recorded history!');
 			return $.mobile.urlHistory.stack[0];
 		} else
 			$.mobile.urlHistory.activeIndex--;
 		var prev = $.mobile.urlHistory.stack[$.mobile.urlHistory.activeIndex];
 		$.mobile.urlHistory.stack = $.mobile.urlHistory.stack.slice(0, $.mobile.urlHistory.activeIndex);
 		if (!/#/.exec(prev.url)) {
-			console.warn('Router WARNING - Attempting to move to a non hash page', prev);
+			//console.warn('Router WARNING - Attempting to move to a non hash page', prev);
 			prev.transition = $.mobile.routerBaseTransition;
 			prev.url = '#' + $.mobile.routerBasePage;
 		}
 		return prev;
 	};
 	$(document).on('click', 'a', function(e) {
-		console.log('Registered A click', e);
 		$.mobile.routerA = $(this);
 		if ($(this).data('rel') == 'back') {
 			$.mobile.routerGoBack();
